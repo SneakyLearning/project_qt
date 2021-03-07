@@ -10,5 +10,6 @@ int main(int argc, char *argv[])
 	project_qt w;
 	w.show();
 	w.PoinCloudShow();
+	w.ImageShow();
 	return a.exec();
 }

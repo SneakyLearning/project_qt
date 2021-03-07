@@ -6,34 +6,99 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>1124</width>
+    <height>556</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>project_qt</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QVTKWidget" name="qvtkWidget" native="true">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>330</y>
+     <x>690</x>
+     <y>30</y>
+     <width>391</width>
+     <height>281</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>30</y>
+     <width>381</width>
+     <height>271</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_2">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>110</y>
      <width>75</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
-    <string>load</string>
+    <string>Init Kinect</string>
    </property>
   </widget>
-  <widget class="QVTKWidget" name="qvtkWidget">
+  <widget class="QPushButton" name="pushButton_3">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>70</y>
-     <width>391</width>
-     <height>281</height>
+     <x>20</x>
+     <y>150</y>
+     <width>75</width>
+     <height>23</height>
     </rect>
+   </property>
+   <property name="text">
+    <string>采集数据</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_4">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>190</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>手眼标定</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_5">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>230</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>点云处理</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_6">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>270</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>生成文件</string>
    </property>
   </widget>
  </widget>
