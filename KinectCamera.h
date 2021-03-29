@@ -18,6 +18,7 @@ using namespace cv;
 using namespace std;
 using namespace pcl;
 
+extern Mat image_rgb;
 extern PointCloud<PointXYZ>::Ptr cloud;
 extern vector<vector<int>> nine_points;
 extern vector<vector<float>> nine_points_xyz;

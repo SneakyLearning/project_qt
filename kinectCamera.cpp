@@ -1,5 +1,6 @@
 #pragma warning(disable:4996)
 #include "KinectCamera.h"
+#include "project_qt.h"
 
 const int width = 640;
 const int height = 480;
@@ -43,10 +44,10 @@ void kinectCamera::getData()
 		}
 	}
 	flip(image_rgb, image_rgb, 1);
-	namedWindow("rgb", CV_WINDOW_NORMAL);
-	imshow("rgb", image_rgb);
+	/*namedWindow("rgb", CV_WINDOW_NORMAL);
+	imshow("rgb", image_rgb);*/
 	//imwrite("2ndtemplate.jpg", image_rgb);
-	waitKey(0);
+	//waitKey(0);
 	/*Mat roi = image_rgb(Rect(285, 240, 100, 110));
 	namedWindow("roi", CV_WINDOW_NORMAL);
 	imshow("roi", roi);
@@ -75,12 +76,6 @@ void kinectCamera::getData()
 		}
 	}
 	this->findPointsArea();
-	pcl::visualization::PCLVisualizer viewer("simple");
-	viewer.addPointCloud(cloud,"cloud");
-	while (!viewer.wasStopped())
-	{
-		viewer.spinOnce(100);
-	}
 	texture2->UnlockRect(0);
 	NuiShutdown();
 	return;
@@ -96,26 +91,26 @@ void kinectCamera::findPointsArea()
 	minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc, Mat());
 	matchLoc = maxLoc;
 	rectangle(image_rgb, Rect(matchLoc.x, matchLoc.y, template_img.cols, template_img.rows), Scalar(255, 0, 0));
-	namedWindow("roi", CV_WINDOW_NORMAL);
-	imshow("roi", image_rgb);
+	/*namedWindow("roi", CV_WINDOW_NORMAL);
+	imshow("roi", image_rgb);*/
 	this->find_nine_circles(image_rgb, matchLoc.x, matchLoc.y, template_img.cols, template_img.rows);
-	waitKey(0);
+	//waitKey(0);
 }
 
 void kinectCamera::find_nine_circles(Mat src_img,int bias_x,int bias_y,int bias_width,int bias_height)
 {
 	Mat binary_img, dst_img;
 	src_img = image_rgb(Rect(bias_x, bias_y, bias_width,bias_height));
-	Mat result_img = src_img.clone();
+	Mat image_rgb = src_img.clone();
 	cvtColor(src_img, src_img, COLOR_BGR2GRAY);
 	threshold(src_img, binary_img, 180
 		, 255, THRESH_BINARY);
-	namedWindow("binary", 0);
-	imshow("binary", binary_img);
+	/*namedWindow("binary", 0);
+	imshow("binary", binary_img);*/
 	vector<vector<Point>> contours;
 	vector<Vec4i> hireachy;
 	findContours(binary_img, contours, hireachy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point());
-	drawContours(result_img, contours, -1, Scalar(0, 0, 255));
+	drawContours(image_rgb, contours, -1, Scalar(0, 0, 255));
 	int text = 0;
 	for (int i = 0; i < hireachy.size(); i++)
 	{
@@ -139,16 +134,16 @@ void kinectCamera::find_nine_circles(Mat src_img,int bias_x,int bias_y,int bias_
 			printf("Բ�İ뾶: %f\n", radius);
 
 			nine_points.push_back({ (int)(rect.center.x) + bias_x, (int)(rect.center.y) + bias_y });
-			putText(result_img, to_string(text++), rect.center, FONT_HERSHEY_COMPLEX, 1, Scalar(0, 255, 0));
-			ellipse(result_img, rect, Scalar(0, 255, 255), 1);
-			circle(result_img, rect.center, 1, Scalar(0, 255, 0), 2, 8, 0);
+			putText(image_rgb, to_string(text++), rect.center, FONT_HERSHEY_COMPLEX, 1, Scalar(0, 255, 0));
+			ellipse(image_rgb, rect, Scalar(0, 255, 255), 1);
+			circle(image_rgb, rect.center, 1, Scalar(0, 255, 0), 2, 8, 0);
 		}
 
 	}
 	//drawContours(result_img, contours, -1, Scalar(0, 255, 0), 1, 8, hireachy, 4);
-	namedWindow("result", 0);
-	imshow("result", result_img);
-	waitKey(0);
+	/*namedWindow("result", 0);
+	imshow("result", image_rgb);
+	waitKey(0);*/
 	this->find_point_xyz(nine_points);
 	return;
 }

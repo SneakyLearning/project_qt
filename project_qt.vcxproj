@@ -33,6 +33,8 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\project_kinect\kinect_debug_x64.props" />
+    <Import Project="..\project_v1\opencv_debug_x64.props" />
     <Import Project="..\project_v2\pcl_debug_x64.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -62,7 +64,7 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
@@ -81,9 +83,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="kinectCamera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mylabel.cpp" />
+    <ClCompile Include="PointCloudProcess.cpp" />
     <ClCompile Include="project_qt.cpp" />
+    <ClCompile Include="transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="project_qt.h" />
@@ -98,6 +103,9 @@
     <QtMoc Include="mylabel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="KinectCamera.h" />
+    <ClInclude Include="pointCloudProcess.h" />
+    <ClInclude Include="transform.h" />
     <ClInclude Include="x64\Debug\uic\ui_project_qt.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
