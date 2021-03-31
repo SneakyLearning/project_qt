@@ -71,6 +71,13 @@
      </widget>
     </item>
     <item>
+     <widget class="QPushButton" name="pushButton_pass">
+      <property name="text">
+       <string>直通滤波</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QPushButton" name="pushButton_voxel">
       <property name="text">
        <string>降采样</string>

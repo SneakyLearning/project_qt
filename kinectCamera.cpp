@@ -44,7 +44,7 @@ void kinectCamera::getData()
 		}
 	}
 	flip(image_rgb, image_rgb, 1);
-	/*Mat roi = image_rgb(Rect(285, 240, 100, 110));
+	/*Mat roi = image_rgb(Rect(270, 200, 125, 125));
 	namedWindow("roi", CV_WINDOW_NORMAL);
 	imshow("roi", roi);
 	waitKey(0);
@@ -79,7 +79,7 @@ void kinectCamera::getData()
 
 void kinectCamera::findPointsArea()
 {
-	Mat template_img = imread("D:\\c++_projects\\project_v5\\2ndtemplate2.jpg");
+	Mat template_img = imread("template.jpg");
 	Mat result(image_rgb.cols - template_img.cols + 1, image_rgb.rows - template_img.rows + 1, CV_32FC1);
 	matchTemplate(image_rgb, template_img,result,5);
 	double minVal, maxVal;
@@ -99,10 +99,10 @@ void kinectCamera::find_nine_circles(Mat src_img,int bias_x,int bias_y,int bias_
 	src_img = image_rgb(Rect(bias_x, bias_y, bias_width,bias_height));
 	Mat image_rgb = src_img.clone();
 	cvtColor(src_img, src_img, COLOR_BGR2GRAY);
-	threshold(src_img, binary_img, 180
+	threshold(src_img, binary_img, 200
 		, 255, THRESH_BINARY);
-	/*namedWindow("binary", 0);
-	imshow("binary", binary_img);*/
+	namedWindow("binary", 0);
+	imshow("binary", binary_img);
 	vector<vector<Point>> contours;
 	vector<Vec4i> hireachy;
 	findContours(binary_img, contours, hireachy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point());
@@ -110,7 +110,7 @@ void kinectCamera::find_nine_circles(Mat src_img,int bias_x,int bias_y,int bias_
 	int text = 0;
 	for (int i = 0; i < hireachy.size(); i++)
 	{
-		if (hireachy[i][3] != 0) continue;
+		if (hireachy[i][2] != 0) continue;
 		if (contours[i].size() < 5)continue;
 		double area = contourArea(contours[i]);
 		if (area < 9)continue;
@@ -136,10 +136,10 @@ void kinectCamera::find_nine_circles(Mat src_img,int bias_x,int bias_y,int bias_
 		}
 
 	}
-	//drawContours(result_img, contours, -1, Scalar(0, 255, 0), 1, 8, hireachy, 4);
-	/*namedWindow("result", 0);
+	drawContours(image_rgb, contours, -1, Scalar(0, 255, 0), 1, 8, hireachy, 4);
+	namedWindow("result", 0);
 	imshow("result", image_rgb);
-	waitKey(0);*/
+	waitKey(0);
 	this->find_point_xyz(nine_points);
 	return;
 }

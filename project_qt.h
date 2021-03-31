@@ -32,6 +32,7 @@ public:
 	void pushbutton_init_slot();
 	void pushbutton_getdata_slot();
 	void pushbutton_calibrate_slot();
+	void pushbutton_pass_slot();
 	void pushbutton_voxel_slot();
 	void pushbutton_outlier_slot();
 	void pushbutton_background_slot();

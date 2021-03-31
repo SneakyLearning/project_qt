@@ -2,11 +2,25 @@
 
 PointCloud<PointNormal>::Ptr doncloud_filtered(new PointCloud<PointNormal>);
 
+void pointCloudProcess::passfilter()
+{
+	PassThrough<PointXYZ> pass;
+	pass.setInputCloud(cloud);
+	pass.setFilterFieldName("x");
+	pass.setFilterLimits(-0.2, 0.15);
+	pass.filter(*cloud);
+	pass.setInputCloud(cloud);
+	pass.setFilterFieldName("y");
+	pass.setFilterLimits(-0.28, 0.10);
+	pass.filter(*cloud);
+	return;
+}
+
 void pointCloudProcess::voxelfilter()
 {
 	VoxelGrid<PointXYZ> sor;
 	sor.setInputCloud(cloud);
-	sor.setLeafSize(0.01f, 0.01f, 0.01f);
+	sor.setLeafSize(0.005f, 0.005f, 0.005f);
 	sor.filter(*cloud);
 	/*pcl::visualization::PCLVisualizer viewer("draw weld cloud");
 	viewer.addPointCloud(cloud, "cloud");

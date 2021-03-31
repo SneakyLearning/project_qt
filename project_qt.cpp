@@ -19,6 +19,7 @@ project_qt::project_qt(QWidget *parent)
 	connect(ui.pushButton_init, &QPushButton::pressed, this, &project_qt::pushbutton_init_slot);
 	connect(ui.pushButton_getdata, &QPushButton::pressed, this, &project_qt::pushbutton_getdata_slot);
 	connect(ui.pushButton_calibrate, &QPushButton::pressed, this, &project_qt::pushbutton_calibrate_slot);
+	connect(ui.pushButton_pass, &QPushButton::pressed, this, &project_qt::pushbutton_pass_slot);
 	connect(ui.pushButton_voxel, &QPushButton::pressed, this, &project_qt::pushbutton_voxel_slot);
 	connect(ui.pushButton_outlier, &QPushButton::pressed, this, &project_qt::pushbutton_outlier_slot);
 	connect(ui.pushButton_background, &QPushButton::pressed, this, &project_qt::pushbutton_background_slot);
@@ -77,36 +78,44 @@ void project_qt::pushbutton_calibrate_slot()
 
 }
 
+void project_qt::pushbutton_pass_slot()
+{
+	process.passfilter();
+	viewer->removePointCloud("cloud1");
+	viewer->addPointCloud(cloud, "cloud2");
+	ui.qvtkWidget->update();
+}
+
 void project_qt::pushbutton_voxel_slot()
 {
 	process.voxelfilter();
-	viewer->removePointCloud("cloud1");
-	viewer->addPointCloud(cloud, "cloud2");
+	viewer->removePointCloud("cloud2");
+	viewer->addPointCloud(cloud, "cloud3");
 	ui.qvtkWidget->update();
 }
 
 void project_qt::pushbutton_outlier_slot()
 {
 	process.removeOutlier(800, 0.15);
-	viewer->removePointCloud("cloud2");
-	viewer->addPointCloud(cloud, "cloud3");
+	viewer->removePointCloud("cloud3");
+	viewer->addPointCloud(cloud, "cloud4");
 	ui.qvtkWidget->update();
 }
 
 void project_qt::pushbutton_background_slot()
 {
 	process.drawWeldCloud(1000, 0.010);
-	viewer->removePointCloud("cloud3");
-	viewer->addPointCloud(cloud, "cloud4");
+	viewer->removePointCloud("cloud4");
+	viewer->addPointCloud(cloud, "cloud5");
 	ui.qvtkWidget->update();
 }
 
 void project_qt::pushbutton_center_slot()
 {
-	process.removeOutlier(500, 0.1);
+	//process.removeOutlier(500, 0.1);
 	process.drawWeldCloud(1000, 0.002);
-	viewer->removePointCloud("cloud4");
-	viewer->addPointCloud(cloud,"cloud5");
+	viewer->removePointCloud("cloud5");
+	viewer->addPointCloud(cloud,"cloud6");
 	ui.qvtkWidget->update();
 }
 
