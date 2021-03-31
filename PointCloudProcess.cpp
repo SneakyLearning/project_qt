@@ -172,7 +172,7 @@ vector<PointXYZ> pointCloudProcess::drawWeldLine(float threshold=0.005f)
 	return result;
 }
 
-vector<PointXYZ> pointCloudProcess::drawWeldLine(PointCloud<PointXYZ>::Ptr source, float threshold)
+vector<PointXYZ> pointCloudProcess::drawWeldLine(PointCloud<PointXYZ>::Ptr source, float threshold,int direction)
 {
 	PointCloud<PointXYZ>::Ptr cloud_line(new PointCloud<PointXYZ>());
 	ModelCoefficients::Ptr coefficents(new ModelCoefficients);
@@ -191,8 +191,26 @@ vector<PointXYZ> pointCloudProcess::drawWeldLine(PointCloud<PointXYZ>::Ptr sourc
 	extract.filter(*cloud_line);
 	PointXYZ min, max;
 	getMinMax3D(*cloud, min, max);
-	PointXYZ p1(((min.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[3]) + coefficents->values[0], min.y, ((min.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[5]) + coefficents->values[2]);
-	PointXYZ p2(((max.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[3]) + coefficents->values[0], max.y, ((max.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[5]) + coefficents->values[2]);
+	//cout << min.x <<" "<< min.y << " " << min.z << " " << max.x << " " << max.y << " " << max.z << endl;
+	
+		PointXYZ p1(min.x,
+			(min.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[4] + coefficents->values[1],
+			(min.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[5] + coefficents->values[2]);
+		PointXYZ p2(max.x,
+			(max.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[4] + coefficents->values[1],
+			(max.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[5] + coefficents->values[2]);
+	
+	/*else 
+	{
+		PointXYZ p1(
+			((min.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[3]) + coefficents->values[0], 
+			min.y, 
+			((min.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[5]) + coefficents->values[2]);
+		PointXYZ p2(
+			((max.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[3]) + coefficents->values[0], 
+			max.y, 
+			((max.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[5]) + coefficents->values[2]);
+	}*/
 	//pcl::visualization::PCLVisualizer viewer("draw weld line");
 	//viewer.addPointCloud(cloud);
 	//viewer.addLine<PointXYZ>(p1, p2, 0, 1, 0, "line", 0);

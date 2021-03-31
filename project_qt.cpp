@@ -75,7 +75,22 @@ void project_qt::pushbutton_getdata_slot()
 
 void project_qt::pushbutton_calibrate_slot()
 {
-
+	for (vector<vector<float>>::const_iterator iter = nine_points_xyz.begin(); iter != nine_points_xyz.end(); iter++)
+	{
+		trans.addSourcePoints((*iter)[0], (*iter)[1], (*iter)[2]);
+	}
+	for (size_t i = 0; i < nine_points_xyz.size(); i++)
+	{
+		float temp_x, temp_y, temp_z;
+		cout << "input point " << i << " x" << endl;
+		cin >> temp_x;
+		cout << "input point " << i << " y" << endl;
+		cin >> temp_y;
+		cout << "input point " << i << " z" << endl;
+		cin >> temp_z;
+		trans.addTargetPoints(temp_x, temp_y, temp_z);
+	}
+	trans.computerTranform();
 }
 
 void project_qt::pushbutton_pass_slot()
@@ -105,25 +120,29 @@ void project_qt::pushbutton_outlier_slot()
 void project_qt::pushbutton_background_slot()
 {
 	process.drawWeldCloud(1000, 0.010);
-	viewer->removePointCloud("cloud4");
-	viewer->addPointCloud(cloud, "cloud5");
+	viewer->removePointCloud("cloud3");
+	viewer->addPointCloud(cloud, "cloud4");
 	ui.qvtkWidget->update();
 }
 
 void project_qt::pushbutton_center_slot()
 {
-	//process.removeOutlier(500, 0.1);
 	process.drawWeldCloud(1000, 0.002);
-	viewer->removePointCloud("cloud5");
-	viewer->addPointCloud(cloud,"cloud6");
+	process.removeOutlier(10, 0.01);
+	viewer->removePointCloud("cloud4");
+	viewer->addPointCloud(cloud,"cloud5");
 	ui.qvtkWidget->update();
 }
 
 void project_qt::pushbutton_line_slot()
 {
-	vector<PointXYZ> points = process.drawWeldLine(cloud, 0.002);
+	vector<PointXYZ> points = process.drawWeldLine(cloud, 0.002,0);
 	viewer->addLine(points[0],points[1],0, 1, 0, "line", 0);
 	ui.qvtkWidget->update();
+	for (size_t i = 0; i < points.size(); i++)
+	{
+		trans.convert_coordinate_to_robot(points[i].x, points[i].y, points[i].z);
+	}
 }
 
 

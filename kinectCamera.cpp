@@ -110,13 +110,13 @@ void kinectCamera::find_nine_circles(Mat src_img,int bias_x,int bias_y,int bias_
 	int text = 0;
 	for (int i = 0; i < hireachy.size(); i++)
 	{
-		if (hireachy[i][2] != 0) continue;
+		if (hireachy[i][3] != 0) continue;
 		if (contours[i].size() < 5)continue;
 		double area = contourArea(contours[i]);
 		if (area < 9)continue;
 		double arc_length = arcLength(contours[i], true);
 		double radius = arc_length / (2 * M_PI);
-		if (!(5 < radius && radius < 100))
+		if (!(17 < radius && radius < 25))
 		{
 			continue;
 		}
@@ -136,7 +136,7 @@ void kinectCamera::find_nine_circles(Mat src_img,int bias_x,int bias_y,int bias_
 		}
 
 	}
-	drawContours(image_rgb, contours, -1, Scalar(0, 255, 0), 1, 8, hireachy, 4);
+	//drawContours(image_rgb, contours, -1, Scalar(0, 255, 0), 1, 8, hireachy, 4);
 	namedWindow("result", 0);
 	imshow("result", image_rgb);
 	waitKey(0);

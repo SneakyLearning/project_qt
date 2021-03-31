@@ -32,5 +32,5 @@ void transformer::convert_coordinate_to_robot(float x, float y, float z)
 {
 	float temp[4] = { x,y,z,1.0f };
 	float *result= mat->MultiplyPoint(temp);
-	cout << result[0] << result[1] << result[2] << result[3];
+	cout << result[0] << " " << result[1] << " " << result[2] << " " << result[3] << endl;
 }
