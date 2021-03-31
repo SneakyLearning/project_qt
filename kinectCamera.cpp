@@ -44,10 +44,6 @@ void kinectCamera::getData()
 		}
 	}
 	flip(image_rgb, image_rgb, 1);
-	/*namedWindow("rgb", CV_WINDOW_NORMAL);
-	imshow("rgb", image_rgb);*/
-	//imwrite("2ndtemplate.jpg", image_rgb);
-	//waitKey(0);
 	/*Mat roi = image_rgb(Rect(285, 240, 100, 110));
 	namedWindow("roi", CV_WINDOW_NORMAL);
 	imshow("roi", roi);
