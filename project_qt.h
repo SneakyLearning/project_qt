@@ -1,7 +1,5 @@
 #pragma once
 
-#include "KinectCamera.h"
-
 #include <QtWidgets/QWidget>
 #include "ui_project_qt.h"
 #include <vtkRenderWindow.h>
@@ -30,8 +28,16 @@ public:
 	project_qt(QWidget *parent = Q_NULLPTR);
 	void PoinCloudShow();
 	void ImageShow();
-	void pushbutton_2_slot();
-	void pushbutton_3_slot();
+	void update_cloud();
+	void pushbutton_init_slot();
+	void pushbutton_getdata_slot();
+	void pushbutton_calibrate_slot();
+	void pushbutton_voxel_slot();
+	void pushbutton_outlier_slot();
+	void pushbutton_background_slot();
+	void pushbutton_center_slot();
+	void pushbutton_line_slot();
+	void pushbutton_getpath_slot();
 
 protected:
 	
