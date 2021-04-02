@@ -1,4 +1,7 @@
 #include "pointCloudProcess.h"
+#include <pcl/common/transforms.h>
+#include <pcl/filters/project_inliers.h>
+#include <math.h>
 
 PointCloud<PointNormal>::Ptr doncloud_filtered(new PointCloud<PointNormal>);
 
@@ -189,8 +192,22 @@ vector<PointXYZ> pointCloudProcess::drawWeldLine(PointCloud<PointXYZ>::Ptr sourc
 	extract.setIndices(inliers);
 	extract.setNegative(false);
 	extract.filter(*cloud_line);
-	PointXYZ min, max;
-	getMinMax3D(*cloud, min, max);
+	PointCloud<PointXYZ>::Ptr temp_for_transform(new PointCloud<PointXYZ>());
+	ProjectInliers<PointXYZ> proj;
+	proj.setModelType(SACMODEL_LINE);
+	proj.setModelCoefficients(coefficents);
+	proj.setInputCloud(cloud);
+	proj.filter(*temp_for_transform);
+	float alpha = atan2f(coefficents->values[4] , coefficents->values[3]);
+	float beta = atan2f(coefficents->values[5] , sqrtf(coefficents->values[4] * coefficents->values[4] + coefficents->values[3] * coefficents->values[3]));
+	Eigen::Affine3f temp_transform = Eigen::Affine3f::Identity();
+	temp_transform.rotate(Eigen::AngleAxisf(alpha, Eigen::Vector3f::UnitZ()));
+	temp_transform.rotate(Eigen::AngleAxisf(beta, Eigen::Vector3f::UnitY()));
+	transformPointCloud(*cloud, *temp_for_transform, temp_transform);
+	PointXYZ temp_min, temp_max;
+	getMinMax3D(*temp_for_transform, temp_min, temp_max);
+	PointXYZ min = transformPoint(temp_min, temp_transform.inverse());
+	PointXYZ max = transformPoint(temp_max, temp_transform.inverse());
 	//cout << min.x <<" "<< min.y << " " << min.z << " " << max.x << " " << max.y << " " << max.z << endl;
 	
 		PointXYZ p1(min.x,
