@@ -1,6 +1,7 @@
 #include "pointCloudProcess.h"
 #include <pcl/common/transforms.h>
 #include <pcl/filters/project_inliers.h>
+#include <fstream>
 #include <math.h>
 
 PointCloud<PointNormal>::Ptr doncloud_filtered(new PointCloud<PointNormal>);
@@ -74,6 +75,10 @@ void pointCloudProcess::drawWeldCloud(int maxiterations, double threshold)
 	extract.setIndices(inliers);
 	extract.setNegative(true);
 	extract.filter(*cloud);
+	ofstream ofile;
+	ofile.open("normal.txt",ios::trunc);
+	ofile << cofficients->values[0] << endl << cofficients->values[1] << endl << cofficients->values[2] << endl;
+	ofile.close();
 	/*pcl::visualization::PCLVisualizer viewer("draw weld cloud");
 	viewer.addPointCloud(cloud, "cloud");
 	cout << "after process:" << cloud->points.size() << "points" << endl;
@@ -228,6 +233,10 @@ vector<PointXYZ> pointCloudProcess::drawWeldLine(PointCloud<PointXYZ>::Ptr sourc
 			max.y, 
 			((max.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[5]) + coefficents->values[2]);
 	}*/
+	ofstream ofile;
+	ofile.open("twopoints.txt", ios::trunc);
+	ofile << p1.x << endl << p1.y << endl << p1.z << endl << p2.x << endl << p2.y << endl << p2.z << endl;
+	ofile.close();
 	//pcl::visualization::PCLVisualizer viewer("draw weld line");
 	//viewer.addPointCloud(cloud);
 	//viewer.addLine<PointXYZ>(p1, p2, 0, 1, 0, "line", 0);

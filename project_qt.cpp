@@ -145,7 +145,6 @@ void project_qt::pushbutton_line_slot()
 	}
 }
 
-
 void project_qt::pushbutton_getpath_slot()
 {
 
