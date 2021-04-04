@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QtWidgets/QWidget>
+#include <QtWidgets/QMainWindow>
 #include "ui_project_qt.h"
 #include <vtkRenderWindow.h>
 
@@ -20,7 +20,7 @@ using namespace pcl;
 using namespace std;
 using namespace cv;
 
-class project_qt : public QWidget
+class project_qt : public QMainWindow
 {
 	Q_OBJECT
 
@@ -32,6 +32,8 @@ public:
 	void pushbutton_init_slot();
 	void pushbutton_getdata_slot();
 	void pushbutton_calibrate_slot();
+	void pushbutton_showcalibrate_slot();
+	void pushbutton_loadcalibrate_slot();
 	void pushbutton_pass_slot();
 	void pushbutton_voxel_slot();
 	void pushbutton_outlier_slot();

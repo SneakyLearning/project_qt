@@ -88,6 +88,7 @@
     <ClCompile Include="mylabel.cpp" />
     <ClCompile Include="PointCloudProcess.cpp" />
     <ClCompile Include="project_qt.cpp" />
+    <ClCompile Include="subCalibWindow.cpp" />
     <ClCompile Include="transform.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="project_qt.ui" />
+    <QtUic Include="subCalibWindow.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="project_qt.qrc" />
@@ -105,6 +107,8 @@
   <ItemGroup>
     <ClInclude Include="KinectCamera.h" />
     <ClInclude Include="pointCloudProcess.h" />
+    <ClInclude Include="x64\Debug\uic\ui_subCalibWindow.h" />
+    <QtMoc Include="subCalibWindow.h" />
     <ClInclude Include="transform.h" />
     <ClInclude Include="x64\Debug\uic\ui_project_qt.h" />
   </ItemGroup>

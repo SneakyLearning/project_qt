@@ -1,11 +1,5 @@
 #include "transform.h"
 
-vtkSmartPointer<vtkPoints> sourcePoints = vtkSmartPointer<vtkPoints>::New();
-vtkSmartPointer<vtkPoints> targetPoints = vtkSmartPointer<vtkPoints>::New();
-vtkSmartPointer<vtkLandmarkTransform> landmarkTransform =
-vtkSmartPointer<vtkLandmarkTransform>::New();
-vtkMatrix4x4* mat;
-
 void transformer::computerTranform()
 {
 	landmarkTransform->SetSourceLandmarks(sourcePoints);

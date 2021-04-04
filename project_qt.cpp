@@ -3,6 +3,10 @@
 #include "pointCloudProcess.h"
 #include "transform.h"
 #include <vtkAutoInit.h>		//初始化VTK模块
+#include <fstream>
+#include "subCalibWindow.h"
+
+#pragma execution_character_set("utf-8")
 
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
@@ -13,12 +17,12 @@ pointCloudProcess process;
 transformer trans;
 
 project_qt::project_qt(QWidget *parent)
-	: QWidget(parent)
+	: QMainWindow(parent)
 {
 	ui.setupUi(this);
 	connect(ui.pushButton_init, &QPushButton::pressed, this, &project_qt::pushbutton_init_slot);
 	connect(ui.pushButton_getdata, &QPushButton::pressed, this, &project_qt::pushbutton_getdata_slot);
-	connect(ui.pushButton_calibrate, &QPushButton::pressed, this, &project_qt::pushbutton_calibrate_slot);
+	connect(ui.pushButton_calibrate, &QPushButton::pressed, this, &project_qt::pushbutton_showcalibrate_slot);
 	connect(ui.pushButton_pass, &QPushButton::pressed, this, &project_qt::pushbutton_pass_slot);
 	connect(ui.pushButton_voxel, &QPushButton::pressed, this, &project_qt::pushbutton_voxel_slot);
 	connect(ui.pushButton_outlier, &QPushButton::pressed, this, &project_qt::pushbutton_outlier_slot);
@@ -61,7 +65,11 @@ void project_qt::update_cloud()
 
 void project_qt::pushbutton_init_slot()
 {
-	kinect.initKinect();
+	if (kinect.initKinect() == 0)
+	{
+		ui.statusBar->showMessage("相机初始化失败", 3000);
+	}
+	else{ ui.statusBar->showMessage("相机初始化成功", 3000); }
 }
 
 void project_qt::pushbutton_getdata_slot()
@@ -91,6 +99,48 @@ void project_qt::pushbutton_calibrate_slot()
 		trans.addTargetPoints(temp_x, temp_y, temp_z);
 	}
 	trans.computerTranform();
+	ofstream ofs;
+	ofs.open("calibrate.txt", ios::trunc);
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			ofs << trans.mat->Element[i][j] << endl;
+		}
+	}
+	ofs.close();
+	ui.statusBar->showMessage("标定结果已保存", 3000);
+}
+
+void project_qt::pushbutton_showcalibrate_slot()
+{
+	subCalibWindow* subcalibwin = new subCalibWindow(this);
+	subcalibwin->show();
+	connect(subcalibwin, &subCalibWindow::ManulEvent, this, &project_qt::pushbutton_calibrate_slot);
+	connect(subcalibwin, &subCalibWindow::AutoEvent, this, &project_qt::pushbutton_loadcalibrate_slot);
+}
+
+void project_qt::pushbutton_loadcalibrate_slot()
+{
+	ifstream ifs;
+	ifs.open("calibrate.txt", ios::in);
+	if (!ifs.is_open())
+	{
+		ui.statusBar->showMessage("读取失败！", 3000);
+		return;
+	}
+	double tempvalue;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			ifs >> tempvalue;
+			trans.mat->SetElement(1,j,tempvalue);
+		}
+	}
+	ui.statusBar->showMessage("标定结果已读取", 3000);
+	std::cout << "Matrix: " << *trans.mat << std::endl;
+	ifs.close();
 }
 
 void project_qt::pushbutton_pass_slot()
