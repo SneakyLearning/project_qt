@@ -43,7 +43,7 @@
      <item>
       <widget class="QPushButton" name="pushButton_init">
        <property name="text">
-        <string>Init Kinect</string>
+        <string>相机初始化</string>
        </property>
       </widget>
      </item>
