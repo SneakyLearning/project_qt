@@ -135,7 +135,7 @@ void project_qt::pushbutton_loadcalibrate_slot()
 		for (int j = 0; j < 4; j++)
 		{
 			ifs >> tempvalue;
-			trans.mat->SetElement(1,j,tempvalue);
+			trans.mat->SetElement(i,j,tempvalue);
 		}
 	}
 	ui.statusBar->showMessage("标定结果已读取", 3000);

@@ -8,6 +8,7 @@
 class transformer
 {
 public:
+	transformer();
 	vtkMatrix4x4* mat;
 	vtkSmartPointer<vtkLandmarkTransform> landmarkTransform;
 	vtkSmartPointer<vtkPoints> sourcePoints;

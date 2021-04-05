@@ -1,12 +1,21 @@
 #include "transform.h"
 
+transformer::transformer()
+{
+	this->mat=vtkMatrix4x4::New();
+	this->landmarkTransform = vtkLandmarkTransform::New();
+	this->sourcePoints = vtkSmartPointer<vtkPoints>::New();;
+	this->targetPoints = vtkSmartPointer<vtkPoints>::New();;
+}
+
 void transformer::computerTranform()
 {
 	landmarkTransform->SetSourceLandmarks(sourcePoints);
 	landmarkTransform->SetTargetLandmarks(targetPoints);
 	landmarkTransform->SetModeToRigidBody();
 	landmarkTransform->Update();
-	mat = landmarkTransform->GetMatrix();
+	vtkMatrix4x4* temp_mat = landmarkTransform->GetMatrix();
+	mat->DeepCopy(temp_mat);
 	std::cout << "Matrix: " << *mat << std::endl;
 }
 
