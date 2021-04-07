@@ -101,8 +101,8 @@ void kinectCamera::find_nine_circles(Mat src_img,int bias_x,int bias_y,int bias_
 	cvtColor(src_img, src_img, COLOR_BGR2GRAY);
 	threshold(src_img, binary_img, 200
 		, 255, THRESH_BINARY);
-	namedWindow("binary", 0);
-	imshow("binary", binary_img);
+	/*namedWindow("binary", 0);
+	imshow("binary", binary_img);*/
 	vector<vector<Point>> contours;
 	vector<Vec4i> hireachy;
 	findContours(binary_img, contours, hireachy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point());
