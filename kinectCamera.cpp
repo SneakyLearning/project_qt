@@ -73,7 +73,7 @@ void kinectCamera::getData()
 	}
 	this->findPointsArea();
 	texture2->UnlockRect(0);
-	NuiShutdown();
+	this->sensor->NuiShutdown();
 	return;
 }
 
@@ -139,7 +139,6 @@ void kinectCamera::find_nine_circles(Mat src_img,int bias_x,int bias_y,int bias_
 	//drawContours(image_rgb, contours, -1, Scalar(0, 255, 0), 1, 8, hireachy, 4);
 	namedWindow("result", 0);
 	imshow("result", image_rgb);
-	waitKey(0);
 	this->find_point_xyz(nine_points);
 	return;
 }

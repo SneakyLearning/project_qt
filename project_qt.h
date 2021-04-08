@@ -28,7 +28,6 @@ public:
 	project_qt(QWidget *parent = Q_NULLPTR);
 	void PoinCloudShow();
 	void ImageShow();
-	void update_cloud();
 	void pushbutton_init_slot();
 	void pushbutton_getdata_slot();
 	void pushbutton_calibrate_slot();

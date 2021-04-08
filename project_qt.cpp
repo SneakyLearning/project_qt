@@ -40,7 +40,6 @@ project_qt::project_qt(QWidget *parent)
 void project_qt::PoinCloudShow()
 {
 	viewer.reset(new pcl::visualization::PCLVisualizer("viewer", false));
-	//viewer->addPointCloud(cloud);
 	viewer->initCameraParameters();
 	viewer->addCoordinateSystem(1.0);
 
@@ -63,11 +62,6 @@ void project_qt::ImageShow()
 	ui.label->setPixmap(QPixmap::fromImage(Img));
 }
 
-void project_qt::update_cloud()
-{
-	cout << "update" << endl;
-}
-
 void project_qt::pushbutton_init_slot()
 {
 	if (kinect.initKinect() == 0)
@@ -81,9 +75,7 @@ void project_qt::pushbutton_getdata_slot()
 {
 	kinect.getData();
 	this->ImageShow();
-	string indexS = to_string(viewname_Index);
-	viewer->addPointCloud(cloud, indexS);
-	viewer->updatePointCloud(cloud, indexS);
+	viewer->addPointCloud(cloud, "cloud"+to_string(viewname_Index));
 	ui.qvtkWidget->update();
 }
 
@@ -136,34 +128,33 @@ void project_qt::pushbutton_loadcalibrate_slot()
 void project_qt::pushbutton_pass_slot()
 {
 	process.passfilter();
-	string indexS = to_string(viewname_Index);
-	viewer->removePointCloud(indexS);
-	indexS = to_string(viewname_Index++);
-	viewer->addPointCloud(cloud, indexS);
+	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
+	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
 	ui.qvtkWidget->update();
+	ui.statusBar->showMessage(QString("完成点云%1处理").arg(viewname_Index), 3000);
 }
 
 void project_qt::pushbutton_voxel_slot()
 {
 	process.voxelfilter();
-	viewer->removePointCloud("cloud2");
-	viewer->addPointCloud(cloud, "cloud3");
+	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
+	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
 	ui.qvtkWidget->update();
 }
 
 void project_qt::pushbutton_outlier_slot()
 {
 	process.removeOutlier(800, 0.15);
-	viewer->removePointCloud("cloud3");
-	viewer->addPointCloud(cloud, "cloud4");
+	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
+	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
 	ui.qvtkWidget->update();
 }
 
 void project_qt::pushbutton_background_slot()
 {
 	process.drawWeldCloud(1000, 0.010);
-	viewer->removePointCloud("cloud3");
-	viewer->addPointCloud(cloud, "cloud4");
+	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
+	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
 	ui.qvtkWidget->update();
 }
 
@@ -171,8 +162,8 @@ void project_qt::pushbutton_center_slot()
 {
 	process.drawWeldCloud(1000, 0.002);
 	process.removeOutlier(10, 0.01);
-	viewer->removePointCloud("cloud4");
-	viewer->addPointCloud(cloud,"cloud5");
+	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
+	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
 	ui.qvtkWidget->update();
 }
 
