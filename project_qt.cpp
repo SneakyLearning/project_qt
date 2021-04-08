@@ -17,9 +17,13 @@ pointCloudProcess process;
 transformer trans;
 
 project_qt::project_qt(QWidget *parent)
-	: QMainWindow(parent)
+	: QMainWindow(parent), choose_xyz(0), viewname_Index(0)
 {
 	ui.setupUi(this);
+	ui.label->setText(QString("图像显示区域"));
+	ui.label->setAlignment(Qt::AlignCenter);
+	ui.label_hint->setText("输入框");
+	ui.input->setEnabled(false);
 	connect(ui.pushButton_init, &QPushButton::pressed, this, &project_qt::pushbutton_init_slot);
 	connect(ui.pushButton_getdata, &QPushButton::pressed, this, &project_qt::pushbutton_getdata_slot);
 	connect(ui.pushButton_calibrate, &QPushButton::pressed, this, &project_qt::pushbutton_showcalibrate_slot);
@@ -30,6 +34,7 @@ project_qt::project_qt(QWidget *parent)
 	connect(ui.pushButton_center, &QPushButton::pressed, this, &project_qt::pushbutton_center_slot);
 	connect(ui.pushButton_line, &QPushButton::pressed, this, &project_qt::pushbutton_line_slot);
 	connect(ui.pushButton_getpath, &QPushButton::pressed, this, &project_qt::pushbutton_getpath_slot);
+	connect(ui.input, &QLineEdit::returnPressed, this, &project_qt::lineEdit_receiveData);
 }
 
 void project_qt::PoinCloudShow()
@@ -76,40 +81,25 @@ void project_qt::pushbutton_getdata_slot()
 {
 	kinect.getData();
 	this->ImageShow();
-	viewer->addPointCloud(cloud,"cloud1");
-	viewer->updatePointCloud(cloud,"cloud1");
+	string indexS = to_string(viewname_Index);
+	viewer->addPointCloud(cloud, indexS);
+	viewer->updatePointCloud(cloud, indexS);
 	ui.qvtkWidget->update();
 }
 
 void project_qt::pushbutton_calibrate_slot()
 {
+	if (nine_points_xyz.size()!=0)
+	{
+		ui.label_hint->setText(QString("输入点1的x坐标"));
+		ui.input->setEnabled(true);
+		ui.statusBar->showMessage(QString("请标定%1个点").arg(nine_points_xyz.size()),3000);
+	}
+	else  ui.statusBar->showMessage("未找到标定点", 3000); 
 	for (vector<vector<float>>::const_iterator iter = nine_points_xyz.begin(); iter != nine_points_xyz.end(); iter++)
 	{
 		trans.addSourcePoints((*iter)[0], (*iter)[1], (*iter)[2]);
 	}
-	for (size_t i = 0; i < nine_points_xyz.size(); i++)
-	{
-		float temp_x, temp_y, temp_z;
-		cout << "input point " << i << " x" << endl;
-		cin >> temp_x;
-		cout << "input point " << i << " y" << endl;
-		cin >> temp_y;
-		cout << "input point " << i << " z" << endl;
-		cin >> temp_z;
-		trans.addTargetPoints(temp_x, temp_y, temp_z);
-	}
-	trans.computerTranform();
-	ofstream ofs;
-	ofs.open("calibrate.txt", ios::trunc);
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			ofs << trans.mat->Element[i][j] << endl;
-		}
-	}
-	ofs.close();
-	ui.statusBar->showMessage("标定结果已保存", 3000);
 }
 
 void project_qt::pushbutton_showcalibrate_slot()
@@ -146,8 +136,10 @@ void project_qt::pushbutton_loadcalibrate_slot()
 void project_qt::pushbutton_pass_slot()
 {
 	process.passfilter();
-	viewer->removePointCloud("cloud1");
-	viewer->addPointCloud(cloud, "cloud2");
+	string indexS = to_string(viewname_Index);
+	viewer->removePointCloud(indexS);
+	indexS = to_string(viewname_Index++);
+	viewer->addPointCloud(cloud, indexS);
 	ui.qvtkWidget->update();
 }
 
@@ -197,5 +189,40 @@ void project_qt::pushbutton_line_slot()
 
 void project_qt::pushbutton_getpath_slot()
 {
+	
+}
 
+void project_qt::lineEdit_receiveData()
+{
+	QString s = ui.input->text();
+	PtData[choose_xyz % 3] = s.toFloat();
+	choose_xyz++;
+	if (choose_xyz % 3 == 0)
+	{
+		trans.addTargetPoints(PtData[0], PtData[1], PtData[2]);
+	}
+	if (choose_xyz == 3*nine_points_xyz.size())
+	{
+		trans.computerTranform();
+		ofstream ofs;
+		ofs.open("calibrate.txt", ios::trunc);
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				ofs << trans.mat->Element[i][j] << endl;
+			}
+		}
+		ofs.close();
+		ui.statusBar->showMessage("标定结果已保存", 3000);
+		ui.label_hint->setText("输入框");
+		ui.input->setEnabled(false);
+		return;
+	}
+	switch (choose_xyz % 3) 
+	{
+	case 0:ui.label_hint->setText(QString("输入点%1的x坐标").arg(floor(choose_xyz / 3 )));
+	case 1:ui.label_hint->setText(QString("输入点%1的y坐标").arg(floor(choose_xyz / 3 )));
+	case 2:ui.label_hint->setText(QString("输入点%1的z坐标").arg(floor(choose_xyz / 3 )));
+	}
 }

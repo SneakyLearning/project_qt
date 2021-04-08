@@ -41,6 +41,11 @@ public:
 	void pushbutton_center_slot();
 	void pushbutton_line_slot();
 	void pushbutton_getpath_slot();
+	void lineEdit_receiveData();
+	int choose_xyz;
+	float PtData[3];
+
+	int viewname_Index;
 
 protected:
 	
