@@ -116,13 +116,13 @@ void kinectCamera::find_nine_circles(Mat src_img,int bias_x,int bias_y,int bias_
 		if (area < 9)continue;
 		double arc_length = arcLength(contours[i], true);
 		double radius = arc_length / (2 * M_PI);
-		if (!(17 < radius && radius < 25))
+		if (!(15 < radius && radius < 30))
 		{
 			continue;
 		}
 		RotatedRect rect = fitEllipse(contours[i]);
 		float ratio = float(rect.size.width) / float(rect.size.height);
-		if (ratio < 1.1 && ratio > 0.9)
+		if (ratio < 1.2 && ratio > 0.8)
 		{
 			printf("X: %f\n", rect.center.x);
 			printf("Y: %f\n", rect.center.y);
@@ -134,7 +134,6 @@ void kinectCamera::find_nine_circles(Mat src_img,int bias_x,int bias_y,int bias_
 			ellipse(image_rgb, rect, Scalar(0, 255, 255), 1);
 			circle(image_rgb, rect.center, 1, Scalar(0, 255, 0), 2, 8, 0);
 		}
-
 	}
 	//drawContours(image_rgb, contours, -1, Scalar(0, 255, 0), 1, 8, hireachy, 4);
 	namedWindow("result", 0);
@@ -147,11 +146,9 @@ void kinectCamera::find_point_xyz(vector<vector<int>> nine_points)
 {
 	for (vector<vector<int>>::const_iterator iter = nine_points.begin(); iter != nine_points.end(); iter++)
 	{
-		cout << "here3" << endl;
-		cout << cloud->points[0].x << endl;
 		cout << "x:" << cloud->points[(*iter)[1] * 640 + (639 - (*iter)[0])].x << endl;
 		cout << "y:" << cloud->points[(*iter)[1] * 640 + (639 - (*iter)[0])].y << endl;
-			cout << "z:" << cloud->points[(*iter)[1] * 640 + (639 - (*iter)[0])].z << endl;
+		cout << "z:" << cloud->points[(*iter)[1] * 640 + (639 - (*iter)[0])].z << endl;
 		nine_points_xyz.push_back({
 			cloud->points[(*iter)[1] * 640 + (639 - (*iter)[0])].x,
 			cloud->points[(*iter)[1] * 640 + (639 - (*iter)[0])].y,

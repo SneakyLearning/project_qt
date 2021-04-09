@@ -83,7 +83,7 @@ void project_qt::pushbutton_calibrate_slot()
 {
 	if (nine_points_xyz.size()!=0)
 	{
-		ui.label_hint->setText(QString("输入点1的x坐标"));
+		ui.label_hint->setText(QString("输入点0的x坐标"));
 		ui.input->setEnabled(true);
 		ui.statusBar->showMessage(QString("请标定%1个点").arg(nine_points_xyz.size()),3000);
 	}
@@ -186,13 +186,14 @@ void project_qt::pushbutton_getpath_slot()
 void project_qt::lineEdit_receiveData()
 {
 	QString s = ui.input->text();
+	ui.input->clear();
 	PtData[choose_xyz % 3] = s.toFloat();
 	choose_xyz++;
 	if (choose_xyz % 3 == 0)
 	{
 		trans.addTargetPoints(PtData[0], PtData[1], PtData[2]);
 	}
-	if (choose_xyz == 3*nine_points_xyz.size())
+	if (choose_xyz == 3 * nine_points_xyz.size())
 	{
 		trans.computerTranform();
 		ofstream ofs;
@@ -207,13 +208,26 @@ void project_qt::lineEdit_receiveData()
 		ofs.close();
 		ui.statusBar->showMessage("标定结果已保存", 3000);
 		ui.label_hint->setText("输入框");
+		ui.input->clear();
 		ui.input->setEnabled(false);
 		return;
 	}
-	switch (choose_xyz % 3) 
+	switch (choose_xyz % 3)
 	{
-	case 0:ui.label_hint->setText(QString("输入点%1的x坐标").arg(floor(choose_xyz / 3 )));
-	case 1:ui.label_hint->setText(QString("输入点%1的y坐标").arg(floor(choose_xyz / 3 )));
-	case 2:ui.label_hint->setText(QString("输入点%1的z坐标").arg(floor(choose_xyz / 3 )));
+	case (0):
+	{
+		ui.label_hint->setText(QString("输入点%1的x坐标").arg(floor(choose_xyz / 3)));
+		break;
+	};
+	case (1):
+	{
+		ui.label_hint->setText(QString("输入点%1的y坐标").arg(floor(choose_xyz / 3)));
+		break;
+	}
+	case (2):
+	{
+		ui.label_hint->setText(QString("输入点%1的z坐标").arg(floor(choose_xyz / 3)));
+		break;
+	}
 	}
 }

@@ -11,11 +11,11 @@ void pointCloudProcess::passfilter()
 	PassThrough<PointXYZ> pass;
 	pass.setInputCloud(cloud);
 	pass.setFilterFieldName("x");
-	pass.setFilterLimits(-0.2, 0.15);
+	pass.setFilterLimits(-0.2, 0.1);
 	pass.filter(*cloud);
 	pass.setInputCloud(cloud);
 	pass.setFilterFieldName("y");
-	pass.setFilterLimits(-0.28, 0.10);
+	pass.setFilterLimits(-0.25, 0.10);
 	pass.filter(*cloud);
 	return;
 }
