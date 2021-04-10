@@ -26,6 +26,7 @@ class project_qt : public QMainWindow
 
 public:
 	project_qt(QWidget *parent = Q_NULLPTR);
+	void savePointCloud();
 	void PoinCloudShow();
 	void ImageShow();
 	void pushbutton_init_slot();

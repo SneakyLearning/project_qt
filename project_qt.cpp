@@ -35,6 +35,12 @@ project_qt::project_qt(QWidget *parent)
 	connect(ui.pushButton_line, &QPushButton::pressed, this, &project_qt::pushbutton_line_slot);
 	connect(ui.pushButton_getpath, &QPushButton::pressed, this, &project_qt::pushbutton_getpath_slot);
 	connect(ui.input, &QLineEdit::returnPressed, this, &project_qt::lineEdit_receiveData);
+	connect(ui.actionsave, &QAction::triggered, this, &project_qt::savePointCloud);
+}
+
+void project_qt::savePointCloud()
+{
+	io::savePCDFile("points.pcd", *cloud);
 }
 
 void project_qt::PoinCloudShow()
