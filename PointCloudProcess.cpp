@@ -203,10 +203,7 @@ vector<PointXYZ> pointCloudProcess::drawWeldLine(PointCloud<PointXYZ>::Ptr sourc
 	proj.setModelCoefficients(coefficents);
 	proj.setInputCloud(cloud);
 	proj.filter(*temp_for_transform);
-	cout << "l:" << coefficents->values[3] << endl;
-	cout << "m:" << coefficents->values[4] << endl;
-	cout << "n:" << coefficents->values[5] << endl;
-	float alpha = atan2f(coefficents->values[3] , coefficents->values[4])+M_PI/2;
+	float alpha = -atan2f(coefficents->values[3] , coefficents->values[4]);
 	float beta = atan2f(coefficents->values[5] , sqrtf(coefficents->values[4] * coefficents->values[4] + coefficents->values[3] * coefficents->values[3]));
 	Eigen::Affine3f temp_transform = Eigen::Affine3f::Identity();
 	temp_transform.rotate(Eigen::AngleAxisf(alpha, Eigen::Vector3f::UnitZ()));
