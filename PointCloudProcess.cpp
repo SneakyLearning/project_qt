@@ -11,11 +11,11 @@ void pointCloudProcess::passfilter()
 	PassThrough<PointXYZ> pass;
 	pass.setInputCloud(cloud);
 	pass.setFilterFieldName("x");
-	pass.setFilterLimits(-0.2, 0.1);
+	pass.setFilterLimits(-0.18, 0.1);
 	pass.filter(*cloud);
 	pass.setInputCloud(cloud);
 	pass.setFilterFieldName("y");
-	pass.setFilterLimits(-0.25, 0.10);
+	pass.setFilterLimits(-0.22, 0.13);
 	pass.filter(*cloud);
 	return;
 }
@@ -203,12 +203,25 @@ vector<PointXYZ> pointCloudProcess::drawWeldLine(PointCloud<PointXYZ>::Ptr sourc
 	proj.setModelCoefficients(coefficents);
 	proj.setInputCloud(cloud);
 	proj.filter(*temp_for_transform);
-	float alpha = atan2f(coefficents->values[4] , coefficents->values[3]);
+	cout << "l:" << coefficents->values[3] << endl;
+	cout << "m:" << coefficents->values[4] << endl;
+	cout << "n:" << coefficents->values[5] << endl;
+	float alpha = atan2f(coefficents->values[3] , coefficents->values[4])+M_PI/2;
 	float beta = atan2f(coefficents->values[5] , sqrtf(coefficents->values[4] * coefficents->values[4] + coefficents->values[3] * coefficents->values[3]));
 	Eigen::Affine3f temp_transform = Eigen::Affine3f::Identity();
 	temp_transform.rotate(Eigen::AngleAxisf(alpha, Eigen::Vector3f::UnitZ()));
 	temp_transform.rotate(Eigen::AngleAxisf(beta, Eigen::Vector3f::UnitY()));
 	transformPointCloud(*cloud, *temp_for_transform, temp_transform);
+
+	pcl::visualization::PCLVisualizer viewer2("temp_cloud_2");
+	viewer2.addPointCloud(temp_for_transform);
+	viewer2.addCoordinateSystem();
+	cout << "showing result of draw weld line" << endl;
+	while (!viewer2.wasStopped())
+	{
+		viewer2.spinOnce(100);
+	}
+
 	PointXYZ temp_min, temp_max;
 	getMinMax3D(*temp_for_transform, temp_min, temp_max);
 	PointXYZ min = transformPoint(temp_min, temp_transform.inverse());
