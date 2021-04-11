@@ -203,22 +203,21 @@ vector<PointXYZ> pointCloudProcess::drawWeldLine(PointCloud<PointXYZ>::Ptr sourc
 	proj.setModelCoefficients(coefficents);
 	proj.setInputCloud(cloud);
 	proj.filter(*temp_for_transform);
-	
-	float alpha = atan2f(coefficents->values[3] , coefficents->values[4])+M_PI/2;
+	float alpha = -atan2f(coefficents->values[4] , coefficents->values[3]);
 	float beta = atan2f(coefficents->values[5] , sqrtf(pow(coefficents->values[4],2)  + pow(coefficents->values[3] ,2)));
 	Eigen::Affine3f temp_transform = Eigen::Affine3f::Identity();
 	temp_transform.rotate(Eigen::AngleAxisf(alpha, Eigen::Vector3f::UnitZ()));
 	temp_transform.rotate(Eigen::AngleAxisf(beta, Eigen::Vector3f::UnitY()));
 	transformPointCloud(*temp_for_transform, *temp_for_transform, temp_transform);
 
-	pcl::visualization::PCLVisualizer viewer2("temp_cloud_2");
+	/*pcl::visualization::PCLVisualizer viewer2("temp_cloud_2");
 	viewer2.addPointCloud(temp_for_transform);
 	viewer2.addCoordinateSystem();
 	cout << "showing result of draw weld line" << endl;
 	while (!viewer2.wasStopped())
 	{
 		viewer2.spinOnce(100);
-	}
+	}*/
 
 	PointXYZ temp_min, temp_max;
 	getMinMax3D(*temp_for_transform, temp_min, temp_max);
