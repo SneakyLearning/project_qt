@@ -203,12 +203,13 @@ vector<PointXYZ> pointCloudProcess::drawWeldLine(PointCloud<PointXYZ>::Ptr sourc
 	proj.setModelCoefficients(coefficents);
 	proj.setInputCloud(cloud);
 	proj.filter(*temp_for_transform);
-	float alpha = -atan2f(coefficents->values[3] , coefficents->values[4]);
-	float beta = atan2f(coefficents->values[5] , sqrtf(coefficents->values[4] * coefficents->values[4] + coefficents->values[3] * coefficents->values[3]));
+	
+	float alpha = atan2f(coefficents->values[3] , coefficents->values[4])+M_PI/2;
+	float beta = atan2f(coefficents->values[5] , sqrtf(pow(coefficents->values[4],2)  + pow(coefficents->values[3] ,2)));
 	Eigen::Affine3f temp_transform = Eigen::Affine3f::Identity();
 	temp_transform.rotate(Eigen::AngleAxisf(alpha, Eigen::Vector3f::UnitZ()));
 	temp_transform.rotate(Eigen::AngleAxisf(beta, Eigen::Vector3f::UnitY()));
-	transformPointCloud(*cloud, *temp_for_transform, temp_transform);
+	transformPointCloud(*temp_for_transform, *temp_for_transform, temp_transform);
 
 	pcl::visualization::PCLVisualizer viewer2("temp_cloud_2");
 	viewer2.addPointCloud(temp_for_transform);
@@ -223,14 +224,14 @@ vector<PointXYZ> pointCloudProcess::drawWeldLine(PointCloud<PointXYZ>::Ptr sourc
 	getMinMax3D(*temp_for_transform, temp_min, temp_max);
 	PointXYZ min = transformPoint(temp_min, temp_transform.inverse());
 	PointXYZ max = transformPoint(temp_max, temp_transform.inverse());
-	//cout << min.x <<" "<< min.y << " " << min.z << " " << max.x << " " << max.y << " " << max.z << endl;
+	cout << min.x <<" "<< min.y << " " << min.z << " " << max.x << " " << max.y << " " << max.z << endl;
 	
-		PointXYZ p1(min.x,
-			(min.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[4] + coefficents->values[1],
-			(min.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[5] + coefficents->values[2]);
-		PointXYZ p2(max.x,
-			(max.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[4] + coefficents->values[1],
-			(max.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[5] + coefficents->values[2]);
+	PointXYZ p1(min.x,
+		(min.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[4] + coefficents->values[1],
+		(min.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[5] + coefficents->values[2]);
+	PointXYZ p2(max.x,
+		(max.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[4] + coefficents->values[1],
+		(max.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[5] + coefficents->values[2]);
 	
 	/*else 
 	{

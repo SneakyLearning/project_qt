@@ -81,7 +81,8 @@ void project_qt::pushbutton_getdata_slot()
 {
 	kinect.getData();
 	this->ImageShow();
-	viewer->addPointCloud(cloud, "cloud"+to_string(viewname_Index));
+	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
+	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
 	ui.qvtkWidget->update();
 }
 
@@ -158,7 +159,7 @@ void project_qt::pushbutton_outlier_slot()
 
 void project_qt::pushbutton_background_slot()
 {
-	process.drawWeldCloud(1000, 0.008);
+	process.drawWeldCloud(1000, 0.01);
 	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
 	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
 	ui.qvtkWidget->update();
@@ -166,8 +167,8 @@ void project_qt::pushbutton_background_slot()
 
 void project_qt::pushbutton_center_slot()
 {
-	process.drawWeldCloud(1000, 0.002);
 	process.removeOutlier(10, 0.01);
+	process.drawWeldCloud(1000, 0.0018);
 	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
 	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
 	ui.qvtkWidget->update();
