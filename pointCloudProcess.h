@@ -32,11 +32,13 @@ using namespace pcl;
 class pointCloudProcess
 {
 public:
-	void passfilter();
-	void voxelfilter();
+	PointCloud<PointXYZ>::Ptr origin_cloud;
+	PointCloud<PointXYZ>::Ptr temp_cloud;
+	void passfilter(double x_min, double x_max, double y_min, double y_max);
+	void voxelfilter(double leafsize);
 	void removeOutlier(int meank , double threshold );
 	void drawWeldCloud(int maxiterations, double threshold);
 	void donFilter(float smallsize,float largesize);
 	vector<PointXYZ> drawWeldLine(float threshold);
-	vector<PointXYZ> drawWeldLine(PointCloud<PointXYZ>::Ptr source, float threshold,int direction);
+	vector<PointXYZ> drawWeldLine(PointCloud<PointXYZ>::Ptr source, float threshold);
 };

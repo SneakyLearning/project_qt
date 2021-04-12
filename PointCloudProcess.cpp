@@ -6,25 +6,26 @@
 
 PointCloud<PointNormal>::Ptr doncloud_filtered(new PointCloud<PointNormal>);
 
-void pointCloudProcess::passfilter()
+
+void pointCloudProcess::passfilter(double x_min,double x_max,double y_min,double y_max)
 {
 	PassThrough<PointXYZ> pass;
 	pass.setInputCloud(cloud);
 	pass.setFilterFieldName("x");
-	pass.setFilterLimits(-0.18, 0.1);
+	pass.setFilterLimits(x_min, x_max);
 	pass.filter(*cloud);
 	pass.setInputCloud(cloud);
 	pass.setFilterFieldName("y");
-	pass.setFilterLimits(-0.22, 0.13);
+	pass.setFilterLimits(y_min, y_max);
 	pass.filter(*cloud);
 	return;
 }
 
-void pointCloudProcess::voxelfilter()
+void pointCloudProcess::voxelfilter(double leafsize)
 {
 	VoxelGrid<PointXYZ> sor;
 	sor.setInputCloud(cloud);
-	sor.setLeafSize(0.005f, 0.005f, 0.005f);
+	sor.setLeafSize(leafsize,leafsize,leafsize);
 	sor.filter(*cloud);
 	/*pcl::visualization::PCLVisualizer viewer("draw weld cloud");
 	viewer.addPointCloud(cloud, "cloud");
@@ -180,7 +181,7 @@ vector<PointXYZ> pointCloudProcess::drawWeldLine(float threshold=0.005f)
 	return result;
 }
 
-vector<PointXYZ> pointCloudProcess::drawWeldLine(PointCloud<PointXYZ>::Ptr source, float threshold,int direction)
+vector<PointXYZ> pointCloudProcess::drawWeldLine(PointCloud<PointXYZ>::Ptr source, float threshold)
 {
 	PointCloud<PointXYZ>::Ptr cloud_line(new PointCloud<PointXYZ>());
 	ModelCoefficients::Ptr coefficents(new ModelCoefficients);
