@@ -7,6 +7,12 @@
 PointCloud<PointNormal>::Ptr doncloud_filtered(new PointCloud<PointNormal>);
 
 
+pointCloudProcess::pointCloudProcess()
+{
+	origin_cloud.reset(new PointCloud<PointXYZ>());
+	temp_cloud.reset(new PointCloud<PointXYZ>());
+}
+
 void pointCloudProcess::passfilter(double x_min,double x_max,double y_min,double y_max)
 {
 	PassThrough<PointXYZ> pass;

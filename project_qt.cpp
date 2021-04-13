@@ -36,7 +36,7 @@ project_qt::project_qt(QWidget *parent)
 	connect(ui.pushButton_getpath, &QPushButton::pressed, this, &project_qt::pushbutton_getpath_slot);
 	connect(ui.input, &QLineEdit::returnPressed, this, &project_qt::lineEdit_receiveData);
 	connect(ui.actionsave, &QAction::triggered, this, &project_qt::savePointCloud);
-	connect(ui.actionsave_temp, &QAction::triggered, this, [&]() {copyPointCloud(*cloud, *process.temp_cloud); });
+	connect(ui.actionsave_temp, &QAction::triggered, this, [&]() {copyPointCloud(*cloud, *process.temp_cloud); cout << "here" << endl; });
 	connect(ui.actionload_temp, &QAction::triggered, this, [&]() {copyPointCloud(*process.temp_cloud, *cloud); });
 }
 

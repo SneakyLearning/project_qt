@@ -32,6 +32,7 @@ using namespace pcl;
 class pointCloudProcess
 {
 public:
+	pointCloudProcess();
 	PointCloud<PointXYZ>::Ptr origin_cloud;
 	PointCloud<PointXYZ>::Ptr temp_cloud;
 	void passfilter(double x_min, double x_max, double y_min, double y_max);
