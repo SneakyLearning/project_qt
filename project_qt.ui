@@ -45,8 +45,8 @@
      <rect>
       <x>0</x>
       <y>40</y>
-      <width>418</width>
-      <height>511</height>
+      <width>391</width>
+      <height>501</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -166,7 +166,7 @@
             <double>0.010000000000000</double>
            </property>
            <property name="value">
-            <double>-0.220000000000000</double>
+            <double>-0.270000000000000</double>
            </property>
           </widget>
          </item>
