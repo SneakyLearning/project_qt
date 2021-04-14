@@ -45,7 +45,7 @@
      <rect>
       <x>0</x>
       <y>40</y>
-      <width>345</width>
+      <width>418</width>
       <height>511</height>
      </rect>
     </property>
@@ -166,7 +166,7 @@
             <double>0.010000000000000</double>
            </property>
            <property name="value">
-            <double>-1.220000000000000</double>
+            <double>-0.220000000000000</double>
            </property>
           </widget>
          </item>
@@ -587,7 +587,7 @@
       <x>90</x>
       <y>570</y>
       <width>135</width>
-      <height>40</height>
+      <height>45</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -610,7 +610,7 @@
      <x>0</x>
      <y>0</y>
      <width>1252</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">

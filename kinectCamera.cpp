@@ -99,7 +99,7 @@ void kinectCamera::find_nine_circles(Mat src_img,int bias_x,int bias_y,int bias_
 	src_img = image_rgb(Rect(bias_x, bias_y, bias_width,bias_height));
 	Mat image_rgb = src_img.clone();
 	cvtColor(src_img, src_img, COLOR_BGR2GRAY);
-	threshold(src_img, binary_img, 200
+	threshold(src_img, binary_img, 205
 		, 255, THRESH_BINARY);
 	/*namedWindow("binary", 0);
 	imshow("binary", binary_img);*/
@@ -122,7 +122,7 @@ void kinectCamera::find_nine_circles(Mat src_img,int bias_x,int bias_y,int bias_
 		}
 		RotatedRect rect = fitEllipse(contours[i]);
 		float ratio = float(rect.size.width) / float(rect.size.height);
-		if (ratio < 1.2 && ratio > 0.8)
+		if (ratio < 1.5 && ratio > 0.5)
 		{
 			printf("X: %f\n", rect.center.x);
 			printf("Y: %f\n", rect.center.y);

@@ -17,7 +17,7 @@ pointCloudProcess process;
 transformer trans;
 
 project_qt::project_qt(QWidget *parent)
-	: QMainWindow(parent), choose_xyz(0), viewname_Index(0)
+	: QMainWindow(parent), choose_xyz(0), viewname_Index(0),line_Index(0)
 {
 	ui.setupUi(this);
 	ui.label->setText(QString("Í¼ÏñÏÔÊ¾ÇøÓò"));
@@ -36,7 +36,7 @@ project_qt::project_qt(QWidget *parent)
 	connect(ui.pushButton_getpath, &QPushButton::pressed, this, &project_qt::pushbutton_getpath_slot);
 	connect(ui.input, &QLineEdit::returnPressed, this, &project_qt::lineEdit_receiveData);
 	connect(ui.actionsave, &QAction::triggered, this, &project_qt::savePointCloud);
-	connect(ui.actionsave_temp, &QAction::triggered, this, [&]() {copyPointCloud(*cloud, *process.temp_cloud); cout << "here" << endl; });
+	connect(ui.actionsave_temp, &QAction::triggered, this, [&]() {copyPointCloud(*cloud, *process.temp_cloud); });
 	connect(ui.actionload_temp, &QAction::triggered, this, [&]() {copyPointCloud(*process.temp_cloud, *cloud); });
 }
 
@@ -180,9 +180,10 @@ void project_qt::pushbutton_center_slot()
 void project_qt::pushbutton_line_slot()
 {
 	vector<PointXYZ> points = process.drawWeldLine(cloud, ui.line_thres_value->value());
-	viewer->removeAllPointClouds();
-	viewer->addPointCloud(process.origin_cloud, "origin_cloud");
-	viewer->addLine(points[0],points[1],0, 1, 0, "line", 0);
+	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
+	viewer->addPointCloud(process.origin_cloud, "cloud" + to_string(viewname_Index));
+	viewer->removeShape("line" + to_string(line_Index++));
+	viewer->addLine(points[0],points[1],0, 1, 0, "line"+to_string(line_Index), 0);
 	ui.qvtkWidget->update();
 	for (size_t i = 0; i < points.size(); i++)
 	{

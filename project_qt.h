@@ -46,7 +46,7 @@ public:
 	float PtData[3];
 
 	int viewname_Index;
-
+	int line_Index;
 protected:
 	
 private:
