@@ -42,6 +42,8 @@ public:
 	void pushbutton_line_slot();
 	void pushbutton_getpath_slot();
 	void lineEdit_receiveData();
+	void save_image();
+	void load_pointcloud();
 	int choose_xyz;
 	float PtData[3];
 

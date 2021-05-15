@@ -5,6 +5,8 @@
 #include <vtkAutoInit.h>		//初始化VTK模块
 #include <fstream>
 #include "subCalibWindow.h"
+#include <QTime>
+#include <QFileDialog>
 
 #pragma execution_character_set("utf-8")
 
@@ -38,6 +40,8 @@ project_qt::project_qt(QWidget *parent)
 	connect(ui.actionsave, &QAction::triggered, this, &project_qt::savePointCloud);
 	connect(ui.actionsave_temp, &QAction::triggered, this, [&]() {copyPointCloud(*cloud, *process.temp_cloud); });
 	connect(ui.actionload_temp, &QAction::triggered, this, [&]() {copyPointCloud(*process.temp_cloud, *cloud); });
+	connect(ui.actionsave_image, &QAction::triggered, this, &project_qt::save_image);
+	connect(ui.actionload_pointcloud, &QAction::triggered, this, &project_qt::load_pointcloud);
 }
 
 void project_qt::savePointCloud()
@@ -154,7 +158,11 @@ void project_qt::pushbutton_voxel_slot()
 
 void project_qt::pushbutton_outlier_slot()
 {
+	ui.statusBar->showMessage("开始过滤离群点", 3000);
+	QTime timer;
+	timer.start();
 	process.removeOutlier(ui.outlier_meank_value->value(), ui.outlier_thres_value->value());
+	ui.statusBar->showMessage(QString(timer.elapsed()), 3000);
 	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
 	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
 	ui.qvtkWidget->update();
@@ -243,4 +251,17 @@ void project_qt::lineEdit_receiveData()
 		break;
 	}
 	}
+}
+
+void project_qt::save_image()
+{
+	imwrite("image_rgb.jpg", image_rgb);
+	//imwrite("image_infra.jpg", image_infra);
+}
+
+void project_qt::load_pointcloud()
+{
+	QString file_name = QFileDialog::getOpenFileName();
+	PCDReader reader;
+	reader.read<PointXYZ>(file_name.toStdString(), *cloud);
 }

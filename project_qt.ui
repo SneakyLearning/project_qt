@@ -610,7 +610,7 @@
      <x>0</x>
      <y>0</y>
      <width>1252</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -620,6 +620,8 @@
     <addaction name="actionsave"/>
     <addaction name="actionsave_temp"/>
     <addaction name="actionload_temp"/>
+    <addaction name="actionsave_image"/>
+    <addaction name="actionload_pointcloud"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -645,6 +647,16 @@
   <action name="actionload_temp">
    <property name="text">
     <string>load_temp</string>
+   </property>
+  </action>
+  <action name="actionsave_image">
+   <property name="text">
+    <string>save_image</string>
+   </property>
+  </action>
+  <action name="actionload_pointcloud">
+   <property name="text">
+    <string>load_pointcloud</string>
    </property>
   </action>
  </widget>

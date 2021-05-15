@@ -6,6 +6,7 @@ const int width = 640;
 const int height = 480;
 
 Mat image_rgb(480, 640, CV_8UC3);
+//Mat image_infra(480, 640, CV_8UC3);
 PointCloud<PointXYZ>::Ptr cloud(new PointCloud<PointXYZ>);
 vector<vector<int>> nine_points;
 vector<vector<float>> nine_points_xyz;
@@ -18,13 +19,16 @@ bool kinectCamera::initKinect()
 	this->sensor->NuiInitialize(NUI_INITIALIZE_FLAG_USES_DEPTH | NUI_INITIALIZE_FLAG_USES_COLOR);
 	this->sensor->NuiImageStreamOpen(NUI_IMAGE_TYPE_DEPTH, NUI_IMAGE_RESOLUTION_640x480, 0, 2, NULL, &this->depthStream);
 	this->sensor->NuiImageStreamOpen(NUI_IMAGE_TYPE_COLOR, NUI_IMAGE_RESOLUTION_640x480, 0, 2, NULL, &this->rgbStream);
+	//this->sensor->NuiImageStreamOpen(NUI_IMAGE_TYPE_COLOR_INFRARED, NUI_IMAGE_RESOLUTION_640x480, 0, 2, NULL, &this->infraStream);
 	return this->sensor;
 }
 
 void kinectCamera::getData()
 {
 	NUI_IMAGE_FRAME imageFrame;
+	//NUI_IMAGE_FRAME imageFrame2;
 	NUI_LOCKED_RECT LockedRect;
+
 	if (this->sensor->NuiImageStreamGetNextFrame(this->rgbStream, 500, &imageFrame) < 0)
 	{
 		cout << "getting frame failed" << endl;
@@ -50,6 +54,28 @@ void kinectCamera::getData()
 	waitKey(0);
 	imwrite("template.jpg", roi);*/
 	texture->UnlockRect(0);
+
+	/*if (this->sensor->NuiImageStreamGetNextFrame(this->infraStream, 500, &imageFrame2) < 0)
+	{
+		cout << "getting frame failed" << endl;
+		return;
+	}
+	INuiFrameTexture* texture3 = imageFrame2.pFrameTexture;
+	texture3->LockRect(0, &LockedRect, NULL, 0);
+	for (int i = 0; i < image_infra.rows; i++)
+	{
+		uchar* prt = image_infra.ptr(i);
+		uchar* pBuffer = (uchar*)(LockedRect.pBits) + i * LockedRect.Pitch;
+		for (int j = 0; j < image_infra.cols; j++)
+		{
+			prt[3 * j] = pBuffer[4 * j];
+			prt[3 * j + 1] = pBuffer[4 * j + 1];
+			prt[3 * j + 2] = pBuffer[4 * j + 2];
+		}
+	}
+	flip(image_infra, image_infra, 1);
+	texture3->UnlockRect(0);*/
+
 	if (sensor->NuiImageStreamGetNextFrame(depthStream, 1, &imageFrame) < 0) return;
 	INuiFrameTexture* texture2 = imageFrame.pFrameTexture;
 	texture2->LockRect(0, &LockedRect, NULL, 0);
@@ -86,7 +112,8 @@ void kinectCamera::findPointsArea()
 	Point minLoc, maxLoc, matchLoc;
 	minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc, Mat());
 	matchLoc = maxLoc;
-	rectangle(image_rgb, Rect(matchLoc.x, matchLoc.y, template_img.cols, template_img.rows), Scalar(255, 0, 0));
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//rectangle(image_rgb, Rect(matchLoc.x, matchLoc.y, template_img.cols, template_img.rows), Scalar(255, 0, 0));
 	/*namedWindow("roi", CV_WINDOW_NORMAL);
 	imshow("roi", image_rgb);*/
 	this->find_nine_circles(image_rgb, matchLoc.x, matchLoc.y, template_img.cols, template_img.rows);

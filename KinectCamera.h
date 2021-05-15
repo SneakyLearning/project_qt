@@ -19,6 +19,7 @@ using namespace std;
 using namespace pcl;
 
 extern Mat image_rgb;
+//extern Mat image_infra;
 extern PointCloud<PointXYZ>::Ptr cloud;
 extern vector<vector<int>> nine_points;
 extern vector<vector<float>> nine_points_xyz;
@@ -36,5 +37,6 @@ public:
 protected:
 	HANDLE depthStream;
 	HANDLE rgbStream;
+	//HANDLE infraStream;
 	INuiSensor* sensor;
 };
