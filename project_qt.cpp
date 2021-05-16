@@ -143,6 +143,7 @@ void project_qt::pushbutton_loadcalibrate_slot()
 void project_qt::pushbutton_pass_slot()
 {
 	process.passfilter(ui.x_pass_min_value->value(),ui.x_pass_max_value->value(),ui.y_pass_min_value->value(),ui.y_pass_max_value->value());
+	ui.statusBar->showMessage(QString("降采样后有%1个点").arg(cloud->points.size()), 3000);
 	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
 	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
 	ui.qvtkWidget->update();
@@ -151,6 +152,7 @@ void project_qt::pushbutton_pass_slot()
 void project_qt::pushbutton_voxel_slot()
 {
 	process.voxelfilter(ui.voxe_value->value());
+	ui.statusBar->showMessage(QString("降采样后有%1个点").arg(cloud->points.size()), 3000);
 	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
 	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
 	ui.qvtkWidget->update();
@@ -162,7 +164,7 @@ void project_qt::pushbutton_outlier_slot()
 	QTime timer;
 	timer.start();
 	process.removeOutlier(ui.outlier_meank_value->value(), ui.outlier_thres_value->value());
-	ui.statusBar->showMessage(QString(timer.elapsed()), 3000);
+	ui.statusBar->showMessage(QString("耗时%1ms").arg(timer.elapsed()), 3000);
 	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
 	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
 	ui.qvtkWidget->update();
@@ -264,4 +266,7 @@ void project_qt::load_pointcloud()
 	QString file_name = QFileDialog::getOpenFileName();
 	PCDReader reader;
 	reader.read<PointXYZ>(file_name.toStdString(), *cloud);
+	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
+	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
+	ui.qvtkWidget->update();
 }
