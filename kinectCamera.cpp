@@ -113,7 +113,7 @@ void kinectCamera::findPointsArea()
 	minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc, Mat());
 	matchLoc = maxLoc;
 	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	//rectangle(image_rgb, Rect(matchLoc.x, matchLoc.y, template_img.cols, template_img.rows), Scalar(255, 0, 0));
+	rectangle(image_rgb, Rect(matchLoc.x, matchLoc.y, template_img.cols, template_img.rows), Scalar(255, 0, 0));
 	/*namedWindow("roi", CV_WINDOW_NORMAL);
 	imshow("roi", image_rgb);*/
 	this->find_nine_circles(image_rgb, matchLoc.x, matchLoc.y, template_img.cols, template_img.rows);
@@ -126,24 +126,27 @@ void kinectCamera::find_nine_circles(Mat src_img,int bias_x,int bias_y,int bias_
 	src_img = image_rgb(Rect(bias_x, bias_y, bias_width,bias_height));
 	Mat image_rgb = src_img.clone();
 	cvtColor(src_img, src_img, COLOR_BGR2GRAY);
-	threshold(src_img, binary_img, 205
-		, 255, THRESH_BINARY);
+	/*namedWindow("gray", 0);
+	imshow("gray", src_img);*/
+	threshold(src_img, binary_img, 205, 255, THRESH_BINARY);
 	/*namedWindow("binary", 0);
 	imshow("binary", binary_img);*/
 	vector<vector<Point>> contours;
 	vector<Vec4i> hireachy;
 	findContours(binary_img, contours, hireachy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point());
 	drawContours(image_rgb, contours, -1, Scalar(0, 0, 255));
+	/*namedWindow("contours", 0);
+	imshow("contours", image_rgb);*/
 	int text = 0;
 	for (int i = 0; i < hireachy.size(); i++)
 	{
 		if (hireachy[i][3] != 0) continue;
 		if (contours[i].size() < 5)continue;
 		double area = contourArea(contours[i]);
-		if (area < 9)continue;
+		if (area < 100)continue;
 		double arc_length = arcLength(contours[i], true);
 		double radius = arc_length / (2 * M_PI);
-		if (!(15 < radius && radius < 30))
+		if (!(10 < radius && radius < 50))
 		{
 			continue;
 		}
