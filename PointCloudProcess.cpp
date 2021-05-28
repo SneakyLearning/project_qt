@@ -86,6 +86,7 @@ void pointCloudProcess::drawWeldCloud(int maxiterations, double threshold)
 	ofile.open("normal.txt",ios::trunc);
 	ofile << cofficients->values[0] << endl << cofficients->values[1] << endl << cofficients->values[2] << endl;
 	ofile.close();
+	normal = { cofficients->values[0], cofficients->values[1], cofficients->values[2] };
 	/*pcl::visualization::PCLVisualizer viewer("draw weld cloud");
 	viewer.addPointCloud(cloud, "cloud");
 	cout << "after process:" << cloud->points.size() << "points" << endl;
@@ -223,19 +224,32 @@ vector<PointXYZ> pointCloudProcess::drawWeldLine(PointCloud<PointXYZ>::Ptr sourc
 	getMinMax3D(*temp_for_transform, temp_min, temp_max);
 	temp_transform = Eigen::Affine3f::Identity();
 	temp_transform2 = Eigen::Affine3f::Identity();
-	temp_transform.rotate(Eigen::AngleAxisf(-alpha, Eigen::Vector3f::UnitZ()));
 	temp_transform2.rotate(Eigen::AngleAxisf(-beta, Eigen::Vector3f::UnitY()));
-	transformPoint(temp_min, temp_transform2);
-	transformPoint(temp_min, temp_transform);
-	transformPoint(temp_max, temp_transform2);
-	transformPoint(temp_max, temp_transform);
+	temp_transform.rotate(Eigen::AngleAxisf(-alpha, Eigen::Vector3f::UnitZ()));
+	temp_min=transformPoint(temp_min, temp_transform2);
+	temp_max=transformPoint(temp_max, temp_transform2);
+	temp_min = transformPoint(temp_min, temp_transform);
+	temp_max = transformPoint(temp_max, temp_transform);
+	PointXYZ p1, p2;
+	if (abs(alpha) < 0.7854) 
+	{
+		p1.x = temp_min.x;
+		p1.y = (temp_min.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[4] + coefficents->values[1];
+		p1.z = (temp_min.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[5] + coefficents->values[2];
+		p2.x = temp_max.x;
+		p2.y = (temp_max.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[4] + coefficents->values[1];
+		p2.z = (temp_max.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[5] + coefficents->values[2];
+	}
+	else
+	{
+		p1.x = (temp_min.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[3] + coefficents->values[0];
+		p1.y = temp_min.y;
+		p1.z = (temp_min.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[5] + coefficents->values[2];
+		p2.x = (temp_max.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[3] + coefficents->values[0];
+		p2.y = temp_max.y;
+		p2.z = (temp_max.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[5] + coefficents->values[2];
+	}
 	
-	PointXYZ p1(temp_min.x,
-		(temp_min.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[4] + coefficents->values[1],
-		(temp_min.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[5] + coefficents->values[2]);
-	PointXYZ p2(temp_max.x,
-		(temp_max.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[4] + coefficents->values[1],
-		(temp_max.x - coefficents->values[0]) / coefficents->values[3] * coefficents->values[5] + coefficents->values[2]);
 	
 	/*else 
 	{

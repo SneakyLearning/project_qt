@@ -42,4 +42,5 @@ public:
 	void donFilter(float smallsize,float largesize);
 	vector<PointXYZ> drawWeldLine(float threshold);
 	vector<PointXYZ> drawWeldLine(PointCloud<PointXYZ>::Ptr source, float threshold);
+	vector<float> normal;
 };

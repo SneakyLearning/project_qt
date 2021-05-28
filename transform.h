@@ -4,6 +4,8 @@
 #include <vtkSmartPointer.h>
 #include <vtkLandmarkTransform.h>
 #include <vtkMatrix4x4.h>
+#include <vector>
+using namespace std;
 
 class transformer
 {
@@ -16,5 +18,5 @@ public:
 	void computerTranform();
 	void addSourcePoints(float x, float y, float z);
 	void addTargetPoints(float x, float y, float z);
-	void convert_coordinate_to_robot(float x, float y, float z);
+	vector<float> convert_coordinate_to_robot(float x, float y, float z);
 };

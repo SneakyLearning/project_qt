@@ -31,9 +31,11 @@ void transformer::addTargetPoints(float x, float y, float z)
 	targetPoints->InsertNextPoint(targetPoint);
 }
 
-void transformer::convert_coordinate_to_robot(float x, float y, float z)
+vector<float> transformer::convert_coordinate_to_robot(float x, float y, float z)
 {
 	float temp[4] = { x,y,z,1.0f };
 	float *result= mat->MultiplyPoint(temp);
 	cout << result[0] << " " << result[1] << " " << result[2] << " " << result[3] << endl;
+	vector<float> res = { result[0] ,result[1],result[2] };
+	return res;
 }

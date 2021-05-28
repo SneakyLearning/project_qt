@@ -19,7 +19,7 @@ pointCloudProcess process;
 transformer trans;
 
 project_qt::project_qt(QWidget *parent)
-	: QMainWindow(parent), choose_xyz(0), viewname_Index(0),line_Index(0)
+	: QMainWindow(parent), choose_xyz(0), viewname_Index(0),line_Index(0),arrow_Index(0)
 {
 	ui.setupUi(this);
 	ui.label->setText(QString("Í¼ÏñÏÔÊ¾ÇøÓò"));
@@ -193,12 +193,27 @@ void project_qt::pushbutton_line_slot()
 	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
 	viewer->addPointCloud(process.origin_cloud, "cloud" + to_string(viewname_Index));
 	viewer->removeShape("line" + to_string(line_Index++));
+	viewer->removeShape("arrow" + to_string(arrow_Index++));
 	viewer->addLine(points[0],points[1],0, 1, 0, "line"+to_string(line_Index), 0);
+	PointXYZ middle_of_twopoints((points[0].x + points[1].x) / 2, (points[0].y + points[1].y) / 2, (points[0].z + points[1].z) / 2);
+	PointXYZ end_of_arrow(middle_of_twopoints.x + process.normal[0] / 10, middle_of_twopoints.y + process.normal[1] / 10, middle_of_twopoints.z + process.normal[2] / 10);
+	viewer->addArrow(middle_of_twopoints, end_of_arrow,0,255,0,"arrow"+ to_string(arrow_Index), 0);
 	ui.qvtkWidget->update();
+	ofstream ofile;
+	ofile.open("twopoints.txt", ios::app);
+	cout << "output two points in robot" << endl;
 	for (size_t i = 0; i < points.size(); i++)
-	{
-		trans.convert_coordinate_to_robot(points[i].x, points[i].y, points[i].z);
+	{	
+		vector<float> temp_point=trans.convert_coordinate_to_robot(points[i].x, points[i].y, points[i].z);
+		ofile << temp_point[0] << endl << temp_point[1] << endl << temp_point[2] << endl;
 	}
+	ofile.close();
+	cout << "output normal in robot" << endl;
+	vector<float> temp_normal = trans.convert_coordinate_to_robot(process.normal[0], process.normal[1], process.normal[2]);
+	ofstream vfile;
+	vfile.open("normal.txt", ios::app);
+	vfile << temp_normal[0] << endl << temp_normal[1] << endl << temp_normal[2] << endl;
+	vfile.close();
 }
 
 void project_qt::pushbutton_getpath_slot()
@@ -258,7 +273,6 @@ void project_qt::lineEdit_receiveData()
 void project_qt::save_image()
 {
 	imwrite("image_rgb.jpg", image_rgb);
-	//imwrite("image_infra.jpg", image_infra);
 }
 
 void project_qt::load_pointcloud()
@@ -266,6 +280,7 @@ void project_qt::load_pointcloud()
 	QString file_name = QFileDialog::getOpenFileName();
 	PCDReader reader;
 	reader.read<PointXYZ>(file_name.toStdString(), *cloud);
+	copyPointCloud(*cloud, *process.origin_cloud);
 	viewer->removePointCloud("cloud" + to_string(viewname_Index++));
 	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
 	ui.qvtkWidget->update();

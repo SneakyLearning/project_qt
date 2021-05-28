@@ -49,6 +49,7 @@ public:
 
 	int viewname_Index;
 	int line_Index;
+	int arrow_Index;
 protected:
 	
 private:
