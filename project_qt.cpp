@@ -196,7 +196,7 @@ void project_qt::pushbutton_line_slot()
 	viewer->removeShape("arrow" + to_string(arrow_Index++));
 	viewer->addLine(points[0],points[1],0, 1, 0, "line"+to_string(line_Index), 0);
 	PointXYZ middle_of_twopoints((points[0].x + points[1].x) / 2, (points[0].y + points[1].y) / 2, (points[0].z + points[1].z) / 2);
-	PointXYZ end_of_arrow(middle_of_twopoints.x + process.normal[0] / 10, middle_of_twopoints.y + process.normal[1] / 10, middle_of_twopoints.z + process.normal[2] / 10);
+	PointXYZ end_of_arrow(middle_of_twopoints.x - process.normal[0] / 10, middle_of_twopoints.y - process.normal[1] / 10, middle_of_twopoints.z - process.normal[2] / 10);
 	viewer->addArrow(middle_of_twopoints, end_of_arrow,0,255,0,"arrow"+ to_string(arrow_Index), 0);
 	ui.qvtkWidget->update();
 	ofstream ofile;
@@ -208,11 +208,14 @@ void project_qt::pushbutton_line_slot()
 		ofile << temp_point[0] << endl << temp_point[1] << endl << temp_point[2] << endl;
 	}
 	ofile.close();
-	cout << "output normal in robot" << endl;
+	cout << "output two normal points in robot" << endl;
 	vector<float> temp_normal = trans.convert_coordinate_to_robot(process.normal[0], process.normal[1], process.normal[2]);
+	vector<float> temp_origin = trans.convert_coordinate_to_robot(0, 0, 0);
+	cout << "output normal in robot" << endl;
+	cout << temp_normal[0] - temp_origin[0] << " " << temp_normal[1] - temp_origin[1] << " " << temp_normal[2] - temp_origin[2] << endl;
 	ofstream vfile;
 	vfile.open("normal.txt", ios::app);
-	vfile << temp_normal[0] << endl << temp_normal[1] << endl << temp_normal[2] << endl;
+	vfile << temp_normal[0] - temp_origin[0] << endl << temp_normal[1] - temp_origin[1] << endl << temp_normal[2] - temp_origin[2] << endl;
 	vfile.close();
 }
 
