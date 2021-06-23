@@ -87,14 +87,6 @@ void pointCloudProcess::drawWeldCloud(int maxiterations, double threshold)
 	ofile << cofficients->values[0] << endl << cofficients->values[1] << endl << cofficients->values[2] << endl;
 	ofile.close();
 	normal = { cofficients->values[0], cofficients->values[1], cofficients->values[2] };
-	/*pcl::visualization::PCLVisualizer viewer("draw weld cloud");
-	viewer.addPointCloud(cloud, "cloud");
-	cout << "after process:" << cloud->points.size() << "points" << endl;
-	cout << "showing result of drawing weld cloud" << endl;
-	while (!viewer.wasStopped())
-	{
-		viewer.spinOnce(100);
-	}*/
 	return;
 }
 
@@ -149,43 +141,6 @@ void pointCloudProcess::donFilter(float smallsize=0.005f, float largesize=1.0f)
 	MView2->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3);
 	MView2->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_OPACITY, 0.5);
 	MView2->spin();
-}
-
-vector<PointXYZ> pointCloudProcess::drawWeldLine(float threshold=0.005f)
-{
-	PointCloud<PointXYZ>::Ptr doncloud_filtered_duplic(new PointCloud<PointXYZ>());
-	PointCloud<PointXYZ>::Ptr cloud_line(new PointCloud<PointXYZ>());
-	copyPointCloud(*doncloud_filtered, *cloud_line);
-	copyPointCloud(*doncloud_filtered, *doncloud_filtered_duplic);
-	ModelCoefficients::Ptr coefficents(new ModelCoefficients);
-	PointIndices::Ptr inliers(new PointIndices);
-	SACSegmentation<PointXYZ> seg;
-	seg.setOptimizeCoefficients(true);
-	seg.setModelType(SACMODEL_LINE);
-	seg.setMethodType(SAC_RANSAC);
-	seg.setDistanceThreshold(threshold);
-	seg.setInputCloud(cloud_line);
-	seg.segment(*inliers, *coefficents);
-	ExtractIndices<PointXYZ> extract;
-	extract.setInputCloud(cloud_line);
-	extract.setIndices(inliers);
-	extract.setNegative(false);
-	extract.filter(*cloud_line);
-	PointXYZ min, max;
-	getMinMax3D(*doncloud_filtered_duplic, min, max);
-	PointXYZ p1(((min.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[3]) + coefficents->values[0], min.y, ((min.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[5]) + coefficents->values[2]);
-	PointXYZ p2(((max.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[3]) + coefficents->values[0], max.y, ((max.y - coefficents->values[1]) / coefficents->values[4] * coefficents->values[5]) + coefficents->values[2]);
-	pcl::visualization::PCLVisualizer viewer("draw weld line");
-	viewer.addPointCloud(doncloud_filtered_duplic);
-	viewer.addLine<PointXYZ>(p1, p2, 0, 1, 0, "line", 0);
-	//viewer.addLine<PointXYZ>(min, max, 1, 0, 0, "line2", 0);
-	cout << "showing result of draw weld line" << endl;
-	while (!viewer.wasStopped())
-	{
-		viewer.spinOnce(100);
-	}
-	vector<PointXYZ> result = { p1,p2 };
-	return result;
 }
 
 vector<PointXYZ> pointCloudProcess::drawWeldLine(PointCloud<PointXYZ>::Ptr source, float threshold)

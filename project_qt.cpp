@@ -6,7 +6,12 @@
 #include <fstream>
 #include "subCalibWindow.h"
 #include <QTime>
+#include <QDateTime>
 #include <QFileDialog>
+#include <Eigen/Geometry>
+#include <Eigen/Dense >
+
+using namespace Eigen;
 
 #pragma execution_character_set("utf-8")
 
@@ -42,6 +47,20 @@ project_qt::project_qt(QWidget *parent)
 	connect(ui.actionload_temp, &QAction::triggered, this, [&]() {copyPointCloud(*process.temp_cloud, *cloud); });
 	connect(ui.actionsave_image, &QAction::triggered, this, &project_qt::save_image);
 	connect(ui.actionload_pointcloud, &QAction::triggered, this, &project_qt::load_pointcloud);
+}
+
+double getDegAngle(Vector3d p1, Vector3d p2, Vector3d p3)
+{
+	Eigen::Vector3d v1 = p2 - p1;
+	Eigen::Vector3d v2 = p3 - p1;
+	//one method, radian_angle belong to 0~pi
+	//double radian_angle = atan2(v1.cross(v2).transpose() * (v1.cross(v2) / v1.cross(v2).norm()), v1.transpose() * v2);
+	//another method, radian_angle belong to 0~pi
+	double radian_angle = atan2(v1.cross(v2).norm(), v1.transpose() * v2);
+	if (v1.cross(v2).z() < 0) {
+		radian_angle = 2 * M_PI - radian_angle;
+	}
+	return radian_angle * 180 / M_PI;
 }
 
 void project_qt::savePointCloud()
@@ -221,7 +240,53 @@ void project_qt::pushbutton_line_slot()
 
 void project_qt::pushbutton_getpath_slot()
 {
-	
+	double twopoints[6];
+	double normal[3];
+	//读取twopoints的机器人坐标
+	ifstream ifile;
+	ifile.open("twopoints.txt", ios::in);
+	string temp_for_read;
+	for(int i=0;i<6;i++) getline(ifile, temp_for_read);
+	for (int i = 0; i < 6; i++)
+	{
+		getline(ifile, temp_for_read);
+		twopoints[i] = stod(temp_for_read);
+	}
+	ifile.close();
+	//读取normal的机器人坐标
+	ifile.open("normal.txt", ios::in);
+	for (int i = 0; i < 3; i++) getline(ifile, temp_for_read);
+	for (int i = 0; i < 3; i++)
+	{
+		getline(ifile, temp_for_read);
+		normal[i] = stod(temp_for_read);
+	}
+	ifile.close();
+	//法向量转换为角度
+	double angle[3];
+	Vector3d origin(0, 0, 0);
+	Vector3d x_axis(1, 0, 0);
+	Vector3d y_axis(0, 1, 0);
+	Vector3d z_axis(0, 0, 1);
+	Vector3d normal_vec(normal[0], normal[1], normal[2]);
+	angle[0] = getDegAngle(origin, x_axis, normal_vec); 
+	angle[1] = getDegAngle(origin, x_axis, normal_vec);
+	angle[2] = getDegAngle(origin, x_axis, normal_vec);
+	//写成机器人文件
+	ofstream ofile;
+	ofile.open("DEMO.txt", ios::trunc);
+	ofile << "/JOB\n/NAME DEMO\n//POS\n///NPOS 2,0,0,0,0,0\n///USER 1\n///TOOL 0\n///POSTYPE USER\n///RECTAN\n///RCONF 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" << endl;
+	ofile << "C0000=1.000000，-1.000000，0.050000," << angle[0] << "°," << angle[1] << "°," << angle[2] <<"°"<< endl;
+	ofile << "C0001=" << twopoints[0] << "，" << twopoints[1] << "，" << twopoints[2] + 0.01 << "," << angle[0] << "°，" << angle[1] << "°，" << angle[2] << "°" << endl;
+	ofile << "C0002=" << twopoints[0] << "，" << twopoints[1] << "，" << twopoints[2]  << "," << angle[0] << "°，" << angle[1] << "°，" << angle[2] << "°" << endl;
+	ofile << "C0003=" << twopoints[3] << "，" << twopoints[4] << "，" << twopoints[5] + 0.01 << "," << angle[0] << "°，" << angle[1] << "°，" << angle[2] << "°" << endl;
+	ofile << "C0004=" << twopoints[3] << "，" << twopoints[4] << "，" << twopoints[5] << "," << angle[0] << "°，" << angle[1] << "°，" << angle[2] << "°" << endl;
+	QDateTime curDateTime = QDateTime::currentDateTime();
+	ofile << "//TNST\n///DATE " << curDateTime.toString("yyyy/MM/dd HH:mm").toStdString() << endl;
+	ofile << "///ATTR SC,RW,RJ\n////FRAME USER1\n///GROUP1 RB1" << endl;
+	ofile << "NOP\nMOVL C00001 V = 80\nMOVL C00002 V = 30\nMOVL C00003 V = 10\nMOVL C00004 V = 30\nMOVL C00000 V = 80\nEND" << endl;
+	ofile.close();
+	ui.statusBar->showMessage("机器人文件已生成", 3000);
 }
 
 void project_qt::lineEdit_receiveData()
@@ -288,3 +353,4 @@ void project_qt::load_pointcloud()
 	viewer->addPointCloud(cloud, "cloud" + to_string(viewname_Index));
 	ui.qvtkWidget->update();
 }
+
